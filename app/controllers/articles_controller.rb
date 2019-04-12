@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   before_action :set_article, except: [:index]
 
   def index
-    articles = Article.all
+    articles = Article.recent
     render json: articles
   end
 
