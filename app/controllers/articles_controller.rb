@@ -1,5 +1,6 @@
 class ArticlesController < ApplicationController
   before_action :set_article, except: [:index]
+  skip_before_action :authorize!, only: [ :index, :show ]
 
   def index
     articles = Article.recent.
