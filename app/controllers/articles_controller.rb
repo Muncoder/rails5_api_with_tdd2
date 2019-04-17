@@ -1,5 +1,4 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, except: [:index]
   skip_before_action :authorize!, only: [ :index, :show ]
 
   def index
@@ -14,12 +13,19 @@ class ArticlesController < ApplicationController
   end
 
   def create
-
+    article = Article.new(article_params)
+    if article.valid?
+      # we will figure that out
+    else
+      render json: article, adapter: :json_api,
+        serializer: ActiveModel::Serializer::ErrorSerializer,
+        status: :unprocessable_entity
+    end
   end
 
   private
 
-  def set_article
-    @article = Article.find(params[:id])
+  def article_params
+    ActionController::Parameters.new
   end
 end
