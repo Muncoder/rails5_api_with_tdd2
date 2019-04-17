@@ -13,6 +13,10 @@ class ArticlesController < ApplicationController
 
   end
 
+  def create
+
+  end
+
   private
 
   def set_article
