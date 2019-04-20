@@ -10,13 +10,16 @@ class CommentsController < ApplicationController
 
   # POST /comments
   def create
-    @comment = @article.comments.build(comment_params.merge(user: current_user))
+    @comment = @article.comments.build(
+        comment_params.merge(user: current_user)
+    )
 
-    if @comment.save
-      render json: @comment, status: :created, location: @article
-    else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
+    @comment.save!
+    render json: @comment, status: :created, location: @article
+  rescue
+    render json: @comment, adapter: :json_api,
+      serializer: ErrorSerializer,
+      status: :unprocessable_entity
   end
 
   private
@@ -26,6 +29,8 @@ class CommentsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def comment_params
-      params.require(:comment).permit(:content, :article_id, :user_id)
+      params.require(:data).require(:attributes).
+          permit(:content) ||
+          ActionController::Parameters.new
     end
 end
